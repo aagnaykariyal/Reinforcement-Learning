@@ -10,8 +10,9 @@ class GridWorld():
         self.env_size = env_size
         # Initialize the value function and set terminal state value to 0
         self.V = np.zeros((env_size, env_size))
-        self.terminal_state = (4, 4)
-        self.V[self.terminal_state] = 0
+        self.terminal_states = [(2,4), (1,3)]
+        self.V[self.terminal_states] = 0
+        self.threshold = 0.01
 
         # Define the transition probabilities and rewards
         self.actions = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # Right, Left, Down, Up
@@ -22,13 +23,13 @@ class GridWorld():
     
     '''@brief Checks if there is the change in V is less than preset threshold
     '''
-    def is_done(self, i, j):
-        pass
+    def is_done(self, val):
+        return abs(self.V - val).max() <= self.threshold
     
     '''@brief Returns True if the state is a terminal state
     '''
     def is_terminal_state(self, i, j):
-        return (i, j) == self. terminal_state
+        return (i, j) in self. terminal_states
     
     '''
     @brief Overwrites the current state-value function with a new one
@@ -55,31 +56,38 @@ class GridWorld():
 
     '''@brief Calculate the maximim value by following a greedy policy
     '''
-    def calculate_max_value(self, i, j):
+    def calculate_max_value(self, i:int, j:int) -> (float, tuple, str):
         # TODO: Find the maximum value for the current state using Bellman's equation
         # HINT #1 start with a - infinite value as the max
         max_value = float('-inf')
         best_action = None
         best_actions_str = ""
         # HINT #2: Loop over all actions
+        if self.is_terminal_state(i,j):
+            return 0, None, None
         for action_index in range(len(self.actions)):
-          # TODO: Find Next state
-          next_i, next_j = self.step(action_index, i, j)
-          if self.is_valid_state(next_i, next_j):
-              pass
+            # Find Next state
+            next_i, next_j = self.step(action_index, i, j)
             # Calculate value function if state is valid
+            # Update the max_value as required
+            if self.is_valid_state(next_i, next_j):
+
+                value = self.get_value(next_i, next_j, self.reward)
+                if value > max_value:
+                    max_value = value
+                    best_action = action_index
+                    best_actions_str = self.action_description[action_index]
                 
-            # TODO: Update the max_value as required
-            
-          '''
-            TODO: Optional - You can also update the best action and best_actions_str to update the policy
-            Otherwise, feel free to change the return values and add any extra methods to calculate the greedy policy
-          '''
-          pass
+            '''
+                TODO: Optional - You can also update the best action and best_actions_str to update the policy
+                Otherwise, feel free to change the return values and add any extra methods to calculate the greedy policy
+            '''
 
-
+        self.pi_greedy[i,j] = best_action
         return max_value, best_action, best_actions_str
     
+    def get_value(self, next_i, next_j, reward):
+        return reward + self.V[next_i, next_j]
     '''@brief Returns the next state given the chosen action and current state
     '''
     def step(self, action_index, i, j):
@@ -98,7 +106,7 @@ class GridWorld():
         for i in range(ENV_SIZE):
             for j in range(ENV_SIZE):
                 # TODO: calculate the greedy policy and populate self.pi_greedy
-
+                
                 # TODO: Optional - Add the optimal action description to self.pi_str to be able to print it
                 pass
         
@@ -108,14 +116,21 @@ gridworld = GridWorld(ENV_SIZE)
 # Perform value iteration
 num_iterations = 1000
 
-for _ in range(num_iterations):
-    pass
-    # TODO: Add another stopping criteria (implement in GridWorld's is_done)
-    # TODO: Make a copy of the value function
-    # TODO: For all states, update the *copied* value function using GridWorld's calculate_max_value
+for _ in range(num_iterations): # Done
+    # Make a copy of the value function
+    print(_)
+    val = gridworld.get_value_function()
+    # For all states, update the *copied* value function using GridWorld's calculate_max_value
     # LOOP GOES HERE
-
-    # TODO: After updating all states, update the value function using GridlWorld's update_value_function
+    for row in range(ENV_SIZE):
+        for col in range(ENV_SIZE):
+            val[row, col], _, _ = gridworld.calculate_max_value(row, col) # need to input i and j
+    # After updating all states, update the value function using GridlWorld's update_value_function
+    # gridworld.update_value_function(val)
+    # Calling the stopping criteria
+    if gridworld.is_done(val):
+        print(gridworld.is_done(val))
+        break
 
 # Print the optimal value function
 print("Optimal Value Function:")
