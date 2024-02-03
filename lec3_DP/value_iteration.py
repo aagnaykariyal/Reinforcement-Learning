@@ -118,19 +118,18 @@ num_iterations = 1000
 
 for _ in range(num_iterations): # Done
     # Make a copy of the value function
-    print(_)
     val = gridworld.get_value_function()
     # For all states, update the *copied* value function using GridWorld's calculate_max_value
     # LOOP GOES HERE
     for row in range(ENV_SIZE):
         for col in range(ENV_SIZE):
-            val[row, col], _, _ = gridworld.calculate_max_value(row, col) # need to input i and j
+            val[row, col], _, action_string = gridworld.calculate_max_value(row, col) # need to input i and j
     # After updating all states, update the value function using GridlWorld's update_value_function
     # gridworld.update_value_function(val)
     # Calling the stopping criteria
-    if gridworld.is_done(val):
-        print(gridworld.is_done(val))
-        break
+    #if gridworld.is_done(val):
+    #    print(gridworld.is_done(val))
+    #    break
 
 # Print the optimal value function
 print("Optimal Value Function:")

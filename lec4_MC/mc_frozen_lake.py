@@ -31,12 +31,12 @@ def simulate_episodes(agent, num_episodes=3):
         time.sleep(1.0)
 
 def main():
-    # MODE = ["LEARN"|"LOAD"]
+    # MODE = ["LEARN"|"LOAD"] | Learn uses the monte-carlo alogrithm, Load uses the predetermined policy
     MODE = "LEARN"
     NUM_EPISODES = 50000
 
     # Define the Blackjack environment
-    env = gym.make('FrozenLake-v1', desc=None, map_name="4x4", is_slippery=False)
+    env = gym.make('FrozenLake-v1', desc=None, map_name="4x4", is_slippery=False)  # is_slippery=True sets it to randomly go to it's neighboring state
     
     # Define the behavior policy (random policy for exploration)
     behavior_policy = np.ones((env.observation_space.n, env.action_space.n)) / env.action_space.n
