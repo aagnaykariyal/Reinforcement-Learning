@@ -11,11 +11,7 @@ class GridWorld():
         self.terminal_states = [(4,4)] # Creating an array of terminal states
         self.grey_states = [(0,4),(1,2),(3,0)] # Creating an array consisting of grey states
         self.pi_str = np.full((env_size, env_size), None) # Creating an array for the optimal policy string
-        self.pi_greedy = np.zeros((self.env_size, self.env_size), dtype=int) 
-
-        self.V[self.terminal_states] = 10 # Assigning values to the terminal states
-        self.V[self.grey_states] = -5 # Assigning values to the grey states
-
+        self.pi_greedy = np.zeros((self.env_size, self.env_size), dtype=int) # Creating an array for finding out the greedy_policy
         self.threshold = 0.01
 
         # Defining the transition probabilities
@@ -24,7 +20,7 @@ class GridWorld():
         self.gamma = 1.0 # Defining the discount factor
 
         # Defining a reward
-        self.reward = -1
+        self.reward = [10, -5, -1]
 
 
     # To check if there is a change in V less than the preset threshold
@@ -82,11 +78,11 @@ class GridWorld():
 
         # Checks if the state is a terminal state and returns values accordingly
         if self.is_terminal_state(i, j):
-            return 10, 100,'Final'
+            return self.reward[0], self.reward[0],'Final'
         
         # Checks if the state is a grey state and returns values accordingly
         if self.is_grey_state(i, j):
-            return -5, -5, 'Grey'
+            return self.reward[1], self.reward[1], 'Grey'
         
         # Loops over all actions
         for action_index in range(len(self.actions)):
@@ -95,7 +91,7 @@ class GridWorld():
 
             # Calculate the value function if state is valid
             if self.is_valid_state(next_i, next_j):
-                value = self.get_value(next_i, next_j, self.reward)
+                value = self.get_value(next_i, next_j, self.reward[2])
                 
             # Update the max_value as required
                 if value > max_value:
