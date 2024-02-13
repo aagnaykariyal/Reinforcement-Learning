@@ -1,5 +1,5 @@
 import gym
-from td_agents_solved import SarsaAgent, QLAgent
+from td_agents import SarsaAgent, QLAgent
 
 def main(algorithm, num_episodes, gamma, alpha, epsilon):
     # Initialize the FrozenLake environment
@@ -27,7 +27,7 @@ def main(algorithm, num_episodes, gamma, alpha, epsilon):
 
 if __name__ == "__main__":
     # Choose if you want to teach a QLearning/Sarsa agent
-    algorithm = "Sarsa"
+    algorithm = "QLearning"
 
     # Set hyperparameters
     gamma = 0.9     # discount factor

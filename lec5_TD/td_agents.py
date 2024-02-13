@@ -1,6 +1,7 @@
 import numpy as np
 import gym
 import time
+import random
 
 class TDAgent:
     def __init__(self, num_states, num_actions, alpha=0.1, gamma=0.9, epsilon=0.1):
@@ -17,15 +18,20 @@ class TDAgent:
     '''@brief Chooses an action (index) using the current policy
     '''
     def select_action(self, state) -> int:
-        # TODO: Generate random value between 0 and 1
-        # TODO: compare random value to self.epsilon and choose greedy vs random action accordingly 
-        pass
-
+        # Generate random value between 0 and 1
+        p = random.random()
+        # compare random value to self.epsilon and choose greedy vs random action accordingly 
+        if p >= self.epsilon:
+            action = self.select_greedy_action(state)
+        else:
+            action = random.randint(0, self.num_actions-1)
+            # return np.random.choice(self.num_actions, p=[1/self.num_actions]*self.num_actions)
+        return action
     '''@brief Returns the action that corresponds to the greedy policy
     '''
     def select_greedy_action(self, state) -> int:
-        # TODO: Return the action that maximizes the q-value at the current state
-        pass
+        # Return the action that maximizes the q-value at the current state
+        return np.argmax(self.q_values[state,:])
 
     '''@brief Updates the action-value function using 
         inputs: current state, action, reward, and next state and action
@@ -79,6 +85,7 @@ class TDAgent:
                 next_state, _, done, _, _ = env.step(action)
                 state = next_state
             time.sleep(1.0)
+
 class SarsaAgent(TDAgent):
     def __init__(self, num_states, num_actions, alpha=0.1, gamma=0.9, epsilon=0.1):
         super().__init__(num_states, num_actions, alpha, gamma, epsilon)
@@ -87,7 +94,12 @@ class SarsaAgent(TDAgent):
         inputs: current state, action, reward, and next state and action
     '''
     def update_q_values(self, state, action, reward, next_state, next_action):
-        # TODO: Apply SARSA update rule to update Q(s,a)
+        # Apply SARSA update rule to update Q(s,a)
+        # old_q = self.q_values[state, action]
+        # new_q = reward + self.gamma * self.q_values[next_state, next_action]
+        # self.q_values[state, action] = old_q + self.alpha * (new_q - old_q)
+ 
+        self.q_values[state, action] += self.alpha * (reward + self.gamma * self.q_values[next_state, next_action] - self.q_values[state, action])
 
 
 class QLAgent(TDAgent):
@@ -98,4 +110,5 @@ class QLAgent(TDAgent):
         inputs: current state, action, reward, and next state and action
     '''
     def update_q_values(self, state, action, reward, next_state, next_action):
-        # TODO: Apply QLearning update rule to update Q(s,a)
+        # Apply QLearning update rule to update Q(s,a)
+        self.q_values[state, action] += self.alpha * (reward + self.gamma * np.max(self.q_values[next_state, next_action]) - self.q_values[state, action])
