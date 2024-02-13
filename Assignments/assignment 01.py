@@ -48,12 +48,12 @@ class GridWorld():
         return self.V
     
     
-    # Overwrites the current state-value function with a new one
+    # Overwrites the current policy with a new one
     def update_pi_str(self, V):
         self.pi_str = np.copy(V)
 
 
-    # Returns the full state-value function which consists of strings
+    # Returns the full curent policy which consists of strings
     def get_pi_str(self):
         return self.pi_str
     
@@ -61,12 +61,6 @@ class GridWorld():
     # Returns the stored greedy policy
     def get_policy(self):
         return self.pi_greedy
-    
-    
-    # Prints the policy using the action descriptions
-    def print_policy(self):
-        for row in self.pi_str:
-            print(row)
 
 
     # Calculate the maximum value by following a greedy policy
